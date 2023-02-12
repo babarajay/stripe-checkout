@@ -1,6 +1,7 @@
 class StaticController < ApplicationController
   def index
-    @products = Product.search(params[:title])
+    condition = params[:title].blank? ? {} : ["lower(title) LIKE ?", "%#{params[:title].downcase}%"]
+    @products = Product.where(condition)
   end
 
   def success; end
