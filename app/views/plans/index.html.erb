@@ -1,25 +1,36 @@
-<div>
-  <h1>Select Plan</h1>
-  <div class="row">
-    <% @plans.each do |plan| %>
-      <div class="col-md-4">
-        <div class="card">
-          <%= form_tag charges_path do %>
-            <div class="card-body">
-              <h5 class="card-title"><%= plan.name %></h5>
-              <p class="card-text">This is plan description.</p>
-              <input type="hidden" name="plan_id" value="<%= plan.id %>">
-              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>"
-                data-description="<%= plan.name %>"
-                data-amount="<%= plan.price * 100 %>"
-                data-three-d-secure="true"
-                data-locale="auto"
-                data-email="<%= current_user.email %>"></script>
-            </div>
-          <% end %>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">Pricing</h1>
+  <p class="lead">Select your prefered plan</p>
+</div>
+
+<div class="card-deck row text-center">
+  <% @plans.each do |plan| %>
+    <div class="col-sm-4">
+      <div class="card box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal"><%= plan.name %></h4>
         </div>
+        <%= form_tag charges_path do %>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title"><%= plan.price %> <small class="text-muted">/ mo</small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>10 users included</li>
+              <li>2 GB of storage</li>
+              <li>Email support</li>
+              <li>Help center access</li>
+            </ul>
+
+            <input type="hidden" name="plan_id" value="<%= plan.id %>">
+            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+              data-key="<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>"
+              data-description="<%= plan.name %>"
+              data-amount="<%= plan.price * 100 %>"
+              data-three-d-secure="true"
+              data-locale="auto"
+              data-email="<%= current_user.email %>"></script>
+          </div>
+        <% end %>
       </div>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </div>
