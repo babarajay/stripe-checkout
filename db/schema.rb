@@ -19,10 +19,7 @@ ActiveRecord::Schema.define(version: 2023_02_12_055354) do
     t.integer "plan_id"
     t.integer "user_id"
     t.integer "status"
-    t.string "token"
-    t.string "charge_id"
-    t.string "error_message"
-    t.string "customer_id"
+    t.string "stripe_payment_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

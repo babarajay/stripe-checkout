@@ -4,13 +4,13 @@
 </div>
 
 <div class="card-deck row text-center">
-  <% @plans.each do |plan| %>
-    <div class="col-sm-4">
-      <div class="card box-shadow">
-        <div class="card-header">
-          <h4 class="my-0 font-weight-normal"><%= plan.name %></h4>
-        </div>
-        <%= form_tag charges_path do %>
+  <%= form_tag charges_path, id: "new_charges_form" do %>
+    <% @plans.each do |plan| %>
+      <div class="col-sm-4">
+        <div class="card box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal"><%= plan.name %></h4>
+          </div>
           <div class="card-body">
             <h1 class="card-title pricing-card-title"><%= plan.price %> <small class="text-muted">/ mo</small></h1>
             <ul class="list-unstyled mt-3 mb-4">
@@ -19,18 +19,62 @@
               <li>Email support</li>
               <li>Help center access</li>
             </ul>
+            <div id="card">
+            </div>
+            <input type="hidden" name="plan_id" id="plan_id" value="<%= plan.id %>">
+            <input type="hidden" name="stripe_payment_id" id="payment">
 
-            <input type="hidden" name="plan_id" value="<%= plan.id %>">
-            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-              data-key="<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>"
-              data-description="<%= plan.name %>"
-              data-amount="<%= plan.price * 100 %>"
-              data-three-d-secure="true"
-              data-locale="auto"
-              data-email="<%= current_user.email %>"></script>
+            <button type="submit" class="btn btn-primary">Pay</button>
           </div>
-        <% end %>
+        </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 </div>
+
+<script charset="utf-8">
+  var stripe = Stripe('<%= ENV["STRIPE_PUBLISHABLE_KEY"] %>');
+
+  var elements = stripe.elements();
+  var cardElement = elements.create('card');
+  cardElement.mount('#card');
+
+  const form = document.querySelector('#new_charges_form');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Step 1: POST request to create payment intent
+    fetch('/payment_intents', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        authenticity_token: '<%= form_authenticity_token %>',
+        plan_id: $("#plan_id").val()
+      }),
+    })
+    .then((response) => response.json())
+    .then((paymentIntent) => {
+      // Step 2: Create payment method and confirm payment intent.
+      stripe.confirmCardPayment(
+        paymentIntent.client_secret, {
+          payment_method: {
+            card: cardElement
+          }
+        }
+      ).then((resp) => {
+        if(resp.error) {
+          alert(resp.error.message);
+        } else {
+          // Step 3: Embed payment ID in form
+          const paymentIdInput = document.querySelector('#payment');
+          paymentIdInput.value = paymentIntent.id;
+          form.submit();
+        }
+      })
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  });
+</script>
