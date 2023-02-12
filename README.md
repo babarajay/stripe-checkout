@@ -13,6 +13,9 @@ This demo consists of a basic integration of the stripe prebuilt checkout with s
 #### Instructions
 If you wish to clone this repository and run locally you will need to duplicate the `.env.template` file in you root directory, rename it `.env` and update the environment variables accordingly.
 
+To check the normal payment flow, use card number: 4242 4242 4242 4242
+To check the 3D secure flow, use card number: 4000 0025 0000 3155
+
 ##### Prerequisites
 - Stripe secret key
 - Stripe webhook secret key
