@@ -14,4 +14,7 @@ test:
   database: stripe_checkout_test
 
 production:
-  url: <%= ENV['DATABASE_URL'] %>
+  <<: *default
+  database: <%= ENV['POSTGRESQL_DB'] %>
+  username: <%= ENV['POSTGRESQL_USERNAME'] %>
+  password: <%= ENV['POSTGRESQL_PASSWORD'] %>
