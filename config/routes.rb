@@ -1,14 +1,8 @@
 Rails.application.routes.draw do
 
   devise_for :users
-  root to: 'static#index'
-  get 'success', to: 'static#success'
-  get 'cancel', to: 'static#cancel'
-  
-  # Stripe Checkout 
-  post 'create', to: 'checkout#create', as:"create_checkout_session"
+  resources :charges, only: [:new, :create]
+  root to: 'plans#index'
 
-  # Webhooks
-  resources :webhooks, only: [:create]
-  
+  get 'success', to: 'static#success'
 end

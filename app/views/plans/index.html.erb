@@ -1,0 +1,25 @@
+<div>
+  <h1>Select Plan</h1>
+  <div class="row">
+    <% @plans.each do |plan| %>
+      <div class="col-md-4">
+        <div class="card">
+          <%= form_tag charges_path do %>
+            <div class="card-body">
+              <h5 class="card-title"><%= plan.name %></h5>
+              <p class="card-text">This is plan description.</p>
+              <input type="hidden" name="plan_id" value="<%= plan.id %>">
+              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>"
+                data-description="<%= plan.name %>"
+                data-amount="<%= plan.price * 100 %>"
+                data-three-d-secure="true"
+                data-locale="auto"
+                data-email="<%= current_user.email %>"></script>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

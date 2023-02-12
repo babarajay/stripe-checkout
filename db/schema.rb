@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2023_02_12_055354) do
   create_table "plans", force: :cascade do |t|
     t.string "name", limit: 50
     t.string "stripe_plan_name", limit: 50
+    t.decimal "price", precision: 10, scale: 2
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -46,6 +47,7 @@ ActiveRecord::Schema.define(version: 2023_02_12_055354) do
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "stripe_token"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
